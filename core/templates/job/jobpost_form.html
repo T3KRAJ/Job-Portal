@@ -1,0 +1,85 @@
+{% extends 'index_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+{% include "navbar.html" %}
+
+{% if request.user.is_recruiter %}
+<div class="container">
+    <div class="card m-5 p-5 shadow p-3 mb-5 bg-white rounded">
+        <h4 class="card-header">Create a Job Post</h4>
+        <div class="cardbody m-4 p-2">
+            <form id="post_form" method="POST" action="" enctype="multipart/form-data">
+
+                {% csrf_token %}
+                {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Job Role</label>
+                        {{ form.job_role|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Job Description</label>
+                        {{ form.job_description|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Category</label>
+                        {{form.category|attr:"class:form-control"|attr:"type:select"|attr:"name:category"|attr:"readonly"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Orgainization</label>
+                        {{ form.organization|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Salary</label>
+                        {{ form.remuneration|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Job Location</label>
+                        {{ form.location|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Skill Required 1</label>
+                        {{ form.skill_required_1|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Skill Required 2</label>
+                        {{ form.skill_required_2|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Skill Required 3</label>
+                        {{ form.skill_required_3|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Skill Required 4</label>
+                        {{ form.skill_required_4|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Skill Required 5</label>
+                        {{ form.skill_required_5|attr:"class:form-control"}}
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputdisplayname">Deadline</label>
+                        {{ form.deadline|attr:"class:form-control"|attr:"type:date"}}
+                    </div>
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li {% if message.tags %} class="font-italic text-decoration-none text-{{ message.tags }} "
+                            {%endif %}> {{ message }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <input class="btn btn-block btn-success" type="submit" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
