@@ -1,6 +1,6 @@
 from datetime import datetime
 from multiprocessing import context
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http.response import HttpResponseRedirect
 from django.contrib.auth import logout
 
@@ -207,101 +207,32 @@ def createJobPost(request):
 
 @login_required
 def edit_job(request, id):
+    data = get_object_or_404(Job, id=id)
+    form = CreateJobForm(instance=data or None)
 
     if request.method == "POST":
-
-        form = CreateJobForm(request.POST)
-
+        form = CreateJobForm(request.POST, instance=data)
         if form.is_valid():
+            form.save()
+            return redirect('job_detail/id')
+    context = {
+        "form": form
+    }
+    return render(request, 'job/jobpost_form.html', context)
 
-            job_role = form.cleaned_data['job_role']
-            job_description = form.cleaned_data['job_description']
-            job_organization = form.cleaned_data['organization']
-            job_remuneration = form.cleaned_data['remuneration']
-            job_location = form.cleaned_data['location']
-            skill_required_1 = form.cleaned_data['skill_required_1']
-            skill_required_2 = form.cleaned_data['skill_required_2']
-            skill_required_3 = form.cleaned_data['skill_required_3']
-            skill_required_4 = form.cleaned_data['skill_required_4']
-            skill_required_5 = form.cleaned_data['skill_required_5']
-            deadline = form.cleaned_data['deadline']
-            category = form.cleaned_data['category']
-            sub_category = form.cleaned_data['sub_category']
-            job_ad_flag = form.cleaned_data['job_ad_flag']
 
-            try:
-                job = Job.objects.get(id=id)
+@login_required
+def job_detail(request, jid):
+    try:
+        job = Job.objects.get(id=jid)
+        context = {
+            'job': job
+        }
+        return render(request, 'job/job_detail.html', context)
 
-                job.job_role = job_role
-                job.job_description = job_description
-                job.organization = job_organization
-                job.remuneration = job_remuneration
-                job.location = job_location
-                job.skill_required_1 = skill_required_1
-                job.skill_required_2 = skill_required_2
-                job.skill_required_3 = skill_required_3
-                job.skill_required_4 = skill_required_4
-                job.skill_required_5 = skill_required_5
-                job.deadline = deadline
-                job.category = category
-                job.sub_category = sub_category
-                job.job_ad_flag = job_ad_flag
-
-                job.save()
-
-                messages.success(request, 'Your Job was Saved')
-                form = CreateJobForm(initial={'job_role': job_role, 'job_description': job_description,
-                                              'organization': job_organization, 'remuneration': job_remuneration,
-                                              'location': job_location, 'skill_required_1': skill_required_1,
-                                              'skill_required_2': skill_required_2, 'skill_required_3': skill_required_3, 'skill_required_4': skill_required_4, 'skill_required_5': skill_required_5, 'deadline': deadline,  'category': category, 'sub_category': sub_category.sub_category_name, 'job_ad_flag': job_ad_flag})
-
-                args = {'form': form}
-
-                return render(request, 'ojss_app/editjob.html', args)
-
-            except Exception as e:
-                messages.warning(
-                    request, 'Job edit failed. Please make sure your form is complete and error free')
-                return render(request, 'ojss_app/editjob.html', {'form': form})
-
-        else:
-            messages.warning(
-                request, "Job edit failed. Please make sure your form is complete and error free")
-            return render(request, 'ojss_app/editjob.html', {'form': form})
-
-    else:
-
-        try:
-
-            job = Job.objects.get(pk=id)
-            job_role = job.job_role
-            job_description = job.job_description
-            organization = job.organization
-            remuneration = job.remuneration
-            location = job.location
-            skill_required_1 = job.skill_required_1
-            skill_required_2 = job.skill_required_2
-            skill_required_3 = job.skill_required_3
-            skill_required_4 = job.skill_required_4
-            skill_required_5 = job.skill_required_5
-            category = job.category
-            sub_category = job.sub_category
-            deadline = job.deadline
-            job_ad_flag = job.job_ad_flag
-
-            form = CreateJobForm(initial={'job_role': job_role, 'job_description': job_description,
-                                          'organization': organization, 'remuneration': remuneration,
-                                          'location': location, 'skill_required_1': skill_required_1,
-                                          'skill_required_2': skill_required_2, 'skill_required_3': skill_required_3, 'skill_required_4': skill_required_4, 'skill_required_5': skill_required_5, 'deadline': deadline,
-                                          'category': category, 'sub_category':
-                                          sub_category.sub_category_name, 'job_ad_flag': job_ad_flag})
-
-            args = {'form': form}
-            return render(request, 'ojss_app/editjob.html', args)
-
-        except Exception as e:
-            messages.warning(request, 'No Such Job Exists')
-            return render(request, 'ojss_app/editjob.html')
+    except:
+        messages.warning(request, "invalid request")
+    return render(request, 'home')
 
 
 @login_required

@@ -34,7 +34,7 @@
             </p>
             <p class="font-weight-light ml-2">Job Location: {{job.location}}</p>
             <p class="font-weight-light ml-2">Salary: {{job.remuneration}}</p>
-            <a href="#" class="btn btn-secondary ml-2">View Full Post</a>
+            <a href="{% url 'job_detail' job.id %}" class="btn btn-secondary ml-2">View Full Post</a>
         </div>
         <div class="card-footer text-muted">Deadline: {{job.deadline}}</div>
     </div>
