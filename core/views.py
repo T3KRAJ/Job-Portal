@@ -322,7 +322,6 @@ def job_details(request,jid):
                 form = None
 
             except Exception as e:
-                print(e)
                 status = "T"
                 form = Application_form
 
@@ -356,45 +355,57 @@ def apply(request, jid):
     if request.method == "POST":
         form = Application_form(request.POST)
         job = Job.objects.get(id=jid)
-        seekerProfile = SeekerProfile.objects.get(seeker=request.user)
-        if form.is_valid():
-            cv = form.cleaned_data['cv']
-            cover_letter = form.cleaned_data['cover_letter']
-            score = matching_score(request, job, seekerProfile)
-            application_id = Application.objects.create(
-                cv=cv,
-                cover_letter=cover_letter,
-                status='A',
-                seeker=seekerProfile,
-                matching_score=score,
-                job=job,
-                seeker_name=seekerProfile.first_name
-            )
-            application_id.save()
-            job_application = Application.objects.get(id=application_id.id)
-            Message.objects.create(
-                application=job_application,
-                recruiter=job.recruiter,
-                seeker=seekerProfile,
-                message_type='A',
-            ).save()
-            messages.success(
-                request, "You have sucessfully applied for this position")
-            args = {'form': form,
-                    'job': job}
+        try:
+            seekerProfile = SeekerProfile.objects.get(seeker=request.user)
+            if form.is_valid():
+                cv = form.cleaned_data['cv']
+                cover_letter = form.cleaned_data['cover_letter']
+                print(seekerProfile)
+                print(job)
+                score = matching_score(request, job, seekerProfile)
+                application_id = Application.objects.create(
+                    cv=cv,
+                    cover_letter=cover_letter,
+                    status='A',
+                    seeker=seekerProfile,
+                    matching_score=score,
+                    job=job,
+                    seeker_name=seekerProfile.first_name
+                )
+                application_id.save()
+                job_application = Application.objects.get(id=application_id.id)
+                Message.objects.create(
+                    application=job_application,
+                    recruiter=job.recruiter,
+                    seeker=seekerProfile,
+                    message_type='A',
+                ).save()
+                messages.success(
+                    request, "You have sucessfully applied for this position")
+                args = {'form': form,
+                        'job': job}
+                return render(request, 'components/job_details.html', args)
+            else:
+                messages.warning(
+                    request, "Your application form had errors in it. Please re submit application")
+                args = {'form': form,
+                        'job': job,
+                        'status': "T"}
+                return render(request, 'components/job_details.html', args)
+        except:
+            form = Application_form
+            args = {
+                form: form
+            }
+            messages.warning(request, "You need to add your skills.")
             return render(request, 'components/job_details.html', args)
-        else:
-            messages.warning(
-                request, "Your application form had errors in it. Please re submit application")
-            args = {'form': form,
-                    'job': job,
-                    'status': "T"}
-            return render(request, 'components/job_details.html', args)
+
+
     else:
         raise Http404("This is an invalid request")
 
 
-def matching_score(request, job, seekerprofile):
+def matching_score(job, seekerprofile):
     job_skills = [job.skill_required_1, job.skill_required_2, job.skill_required_3,
                   job.skill_required_4, job.skill_required_5]
     user_skill_object = SeekerSkillset.objects.get(seeker=seekerprofile)
@@ -773,7 +784,6 @@ def manage_jobs(request):
     except:
         job_list = []
         args = {'jobs': job_list}
-    print(job_list)
     return render(request, 'components/managejobs.html', args)
 
 
