@@ -167,15 +167,17 @@ class Application(models.Model):
     seeker_name = models.CharField(max_length=255)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     cover_letter = models.CharField(max_length=1000)
-    cv = models.CharField(max_length=1000)
+    cv = models.FileField(upload_to='cvs/')
     matching_score = models.IntegerField()
     status = models.CharField(max_length=9,
                               choices=APPLICATION_CHOICES,
                               default='M')
 
+    def __str__(self):
+        return self.seeker.first_name
+
 
 class Message(models.Model):
-
     message_type = models.CharField(max_length=1)
     seeker = models.ForeignKey(SeekerProfile, on_delete=models.CASCADE)
     recruiter = models.ForeignKey(RecruiterProfile, on_delete=models.CASCADE)

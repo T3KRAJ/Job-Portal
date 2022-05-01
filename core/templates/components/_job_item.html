@@ -1,81 +1,25 @@
 <div class="container">
 
     {% if results %}
-
-        {% for item in results %}
-
-        <div class="job_list">
-
-
-        <div class="row">
-        <div class="col-md-12">
-
-            <h2> {{ item.job_role }} </h2>
-
-        </div>
-
+{% for job in results %}
+<div class="card bg-dark border-light text-light text-xs-center mt-4 p-2">
+    <div class="card-header"><span class="float-left">{{job.organization}}</span>
+        <span class="float-right">Posted on: {{job.posted_date}}</span>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-
-            <h4> Organization :{{ item.organization }}</h4>
-
-        </div>
+    <div class="card-block mt-2 mb-2">
+        <h4 class="card-title ml-2">{{job.job_role}}</h4>
+                <h6 class="font-weight-light ml-2 mt-1">Job Location: {{job.location}}</h6>
+                <h6 class="font-weight-light ml-2 mb-4">Salary: Rs. {{job.remuneration}}</h6>
+        <h5 class="font-weight-light ml-2">Job Description:</h5>
+        <p class="card-text ml-2">
+            {{job.job_description|slice:":400"}}...
+        </p>
+        {% if request.user.is_seeker %}
+        <a href="{% url 'job_details' job.id %}" class="btn btn-secondary ml-2">DETAILS</a>
+        {% endif %}
     </div>
-
-    <div class="row">
-        <div class="col-md-12">
-
-
-            <h6> Location : {{ item.location }}</h6>
-
-        </div>
-
-    </div>
-
-
-    <div class="row">
-        <div class="col-md-12">
-
-             <h6> Renumeration : {{ item.remuneration }} </h6>
-
-        </div>
-
-    </div>
-
-            <div class="row">
-        <div class="col-md-12">
-
-             <h6> Deadline : {{ item.deadline }} </h6>
-
-        </div>
-
-    </div>
-
-
-
-        <div class="border-job"> </div>
-
-    <div class="row">
-
-        <div class="col-md-12">
-
-            <p> {{ item.job_description|slice:":255"  }}</p>
-
-        </div>
-
-
-    </div>
-
-
-        <a href="{% url 'job_details'   item.id  %}">
-
-            <button class="btn bg-warning clearfix apply-button"  style="float: right"> Details </button>
-
-        </a>
-
-
-    </div>
+    <div class="card-footer text-muted">Deadline: {{job.deadline}}</div>
+</div>
 
     {% endfor %}
 

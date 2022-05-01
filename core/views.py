@@ -9,6 +9,7 @@ from .forms import Application_form, CreateJobForm, RecruiterProfileForm, Seeker
 from django.contrib import auth, messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 
 
 def index(request):
@@ -41,11 +42,9 @@ def index(request):
     args = {'form': form}
     return render(request, 'registration/index.html', args)
 
-
 @login_required
 def home(request):
     return render(request, 'components/index.html')
-
 
 def seeker_register(request):
     if request.method == 'POST':
@@ -57,7 +56,6 @@ def seeker_register(request):
         form = SeekerRegistrationForm
     args = {'form': form}
     return render(request, 'registration/seeker_signup.html', args)
-
 
 def recruiter_register(request):
     if request.method == 'POST':
@@ -139,7 +137,6 @@ def createJobPost(request):
                 request, 'You Must Complete Your Profile Before Creating Jobs')
             return render(request, 'components/managejobs.html')
 
-
 @login_required
 def edit_job(request, id):
     if request.method == "POST":
@@ -218,7 +215,6 @@ def edit_job(request, id):
             messages.warning(request, 'No Such Job Exists')
             return render(request, 'components/editjob.html')
 
-
 def search_for_jobs(request):
     if request.method == "GET":
         keyword = request.GET.get('keyword')
@@ -263,7 +259,6 @@ def search_for_jobs(request):
                 messages.warning(request, "No results found for your search")
             return render(request, 'components/index.html', args)
 
-
 def search_by_job_role(keyword, category, subcategory):
     keyword = keyword.strip()
     today = date.today()
@@ -273,7 +268,6 @@ def search_by_job_role(keyword, category, subcategory):
         return None
     return db_search
 
-
 def search_by_location(keyword, category, subcategory):
     keyword = keyword.strip()
     today = date.today()
@@ -282,7 +276,6 @@ def search_by_location(keyword, category, subcategory):
     if not db_search:
         return None
     return db_search
-
 
 def search_by_remuneration(keyword, category, subcategory):
     keyword = keyword.strip()
@@ -298,7 +291,6 @@ def search_by_remuneration(keyword, category, subcategory):
     except:
         return None
 
-
 def subcategory(request):
     category_id = request.GET.get('category')
     sub_category = Subcategory.objects.filter(category_id=category_id)
@@ -308,7 +300,6 @@ def subcategory(request):
 def category(request):
     category_list = Category.objects.all()
     return render(request, 'components/category_drop_down.html', {'category': category_list})
-
 
 @login_required
 def job_details(request,jid):
@@ -333,7 +324,6 @@ def job_details(request,jid):
                 'status':status,
                 'form':form}
 
-
     except:
         messages.warning(request,"invalid request")
         args = {'job':None,
@@ -342,26 +332,21 @@ def job_details(request,jid):
 
     return render(request,'components/job_details.html', args)
 
-
-
 @login_required
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect('/')
 
-
 @login_required
 def apply(request, jid):
     if request.method == "POST":
-        form = Application_form(request.POST)
+        form = Application_form(request.POST, request.FILES)
         job = Job.objects.get(id=jid)
         try:
             seekerProfile = SeekerProfile.objects.get(seeker=request.user)
             if form.is_valid():
-                cv = form.cleaned_data['cv']
+                cv = request.FILES['cv']
                 cover_letter = form.cleaned_data['cover_letter']
-                print(seekerProfile)
-                print(job)
                 score = matching_score(request, job, seekerProfile)
                 application_id = Application.objects.create(
                     cv=cv,
@@ -392,7 +377,7 @@ def apply(request, jid):
                         'job': job,
                         'status': "T"}
                 return render(request, 'components/job_details.html', args)
-        except:
+        except Exception as e:
             form = Application_form
             args = {
                 form: form
@@ -405,13 +390,14 @@ def apply(request, jid):
         raise Http404("This is an invalid request")
 
 
-def matching_score(job, seekerprofile):
+def matching_score(request, job, seekerprofile):
     job_skills = [job.skill_required_1, job.skill_required_2, job.skill_required_3,
                   job.skill_required_4, job.skill_required_5]
+    job_skills = [i for i in job_skills if i is not None]
     user_skill_object = SeekerSkillset.objects.get(seeker=seekerprofile)
     user_skills = [user_skill_object.skill_1, user_skill_object.skill_2, user_skill_object.skill_3,
                    user_skill_object.skill_4, user_skill_object.skill_5]
-    score_list = []
+    score_tab = []
     for item in job_skills:
         high_score = -1
         item.strip()
@@ -421,11 +407,9 @@ def matching_score(job, seekerprofile):
                 if score > high_score:
                     high_score = score
         if high_score != -1:
-            score_list.append(high_score)
-    length = len(score_list)
-    total_score = 0
-    for x in score_list:
-        total_score += x
+            score_tab.append(high_score)
+    total_score = sum(score_tab)
+    length = len(score_tab)
     total_score /= length
     total_score *= 100
     return total_score
@@ -572,7 +556,6 @@ def recruiterProfile(request):
             gender = form.cleaned_data['gender']
             company_address = form.cleaned_data['company_address']
             company_phone = form.cleaned_data['company_phone']
-            job_role = form.cleaned_data['job_role']
             company_name = form.cleaned_data['company_name']
             try:
                 profile = RecruiterProfile.objects.get(
@@ -582,7 +565,6 @@ def recruiterProfile(request):
                 profile.gender = gender
                 profile.company_address = company_address
                 profile.company_phone = company_phone
-                profile.job_role = job_role
                 profile.company_name = company_name
                 profile.save()
 
@@ -594,14 +576,13 @@ def recruiterProfile(request):
                     gender=gender,
                     company_address=company_address,
                     company_phone=company_phone,
-                    job_role=job_role,
                     company_name=company_name,
                     recruiter_id=request.user.id
                 ).save()
             form = RecruiterProfileForm(initial={'first_name': first_name, 'last_name': last_name,
                                                  'gender': gender, 'company_address': company_address,
                                                  'company_phone': company_phone,
-                                                 'job_role': job_role, 'company_name': company_name})
+                                                 'company_name': company_name})
         args = {'form': form}
         return render(request, 'components/recruiterprofile.html', args)
     else:
@@ -614,7 +595,6 @@ def recruiterProfile(request):
                 gender = profile.gender
                 company_address = profile.company_address
                 company_phone = profile.company_phone
-                job_role = profile.job_role
                 company_name = profile.company_name
             except:
                 first_name = ""
@@ -622,13 +602,12 @@ def recruiterProfile(request):
                 gender = ""
                 company_address = ""
                 company_phone = ""
-                job_role = ""
                 company_name = ""
             # Getting user details to show in profile
             form = RecruiterProfileForm(initial={'first_name': first_name, 'last_name': last_name,
                                                  'gender': gender, 'company_address': company_address,
                                                  'company_phone': company_phone,
-                                                 'job_role': job_role, 'company_name': company_name})
+                                                 'company_name': company_name})
             args = {'form': form}
             return render(request, 'components/recruiterprofile.html', args)
 
