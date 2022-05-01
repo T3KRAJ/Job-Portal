@@ -97,18 +97,24 @@ class RecruiterProfile(models.Model):
     company_name = models.CharField(max_length=255)
     company_address = models.CharField(max_length=255)
     company_phone = models.IntegerField()
-    job_role = models.CharField(max_length=255)
 
     def __str__(self):
         return self.first_name
 
 
 class Category(models.Model):
-
     category_name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.category_name
+
+
+class Subcategory(models.Model):
+    sub_category_name = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.sub_category_name
 
 
 class Job(models.Model):
@@ -119,6 +125,8 @@ class Job(models.Model):
     location = models.CharField(max_length=255)
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True)
+    sub_category = models.ForeignKey(
+        Subcategory, on_delete=models.SET_NULL, null=True)
     skill_required_1 = models.CharField(max_length=255)
     skill_required_2 = models.CharField(max_length=255)
     skill_required_3 = models.CharField(max_length=255, blank=True, null=True)
@@ -130,3 +138,52 @@ class Job(models.Model):
 
     def __str__(self):
         return self.job_role
+
+
+class SeekerSkillset(models.Model):
+
+    seeker = models.OneToOneField(SeekerProfile, on_delete=models.CASCADE)
+    skill_1 = models.CharField(max_length=255)
+    skill_2 = models.CharField(max_length=255, blank=True, null=True)
+    skill_3 = models.CharField(max_length=255, blank=True, null=True)
+    skill_4 = models.CharField(max_length=255, blank=True, null=True)
+    skill_5 = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.seeker
+
+
+class Application(models.Model):
+
+    APPLICATION_CHOICES = (
+        ('A', 'ACTIVE'),
+        ('S', 'SELECTED'),
+        ('R', 'REJECTED'),
+        {'I', 'Interview'},
+    )
+
+    seeker = models.ForeignKey(SeekerProfile, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    seeker_name = models.CharField(max_length=255)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    cover_letter = models.CharField(max_length=1000)
+    cv = models.CharField(max_length=1000)
+    matching_score = models.IntegerField()
+    status = models.CharField(max_length=9,
+                              choices=APPLICATION_CHOICES,
+                              default='M')
+
+
+class Message(models.Model):
+
+    message_type = models.CharField(max_length=1)
+    seeker = models.ForeignKey(SeekerProfile, on_delete=models.CASCADE)
+    recruiter = models.ForeignKey(RecruiterProfile, on_delete=models.CASCADE)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+
+
+class Interview(models.Model):
+
+    interview_date = models.DateTimeField(auto_now_add=True)
+    application = models.ForeignKey(Application, on_delete=models.CASCADE)

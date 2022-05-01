@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Category, Job, RecruiterProfile, SeekerProfile, User
+from .models import Application, Category, Interview, Job, RecruiterProfile, SeekerProfile, SeekerSkillset, Subcategory, User
 
 
 class SeekerRegistrationForm(UserCreationForm):
@@ -102,20 +102,16 @@ class RecruiterProfileForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'profile-form-style'}))
     company_phone = forms.IntegerField(
         widget=forms.TextInput(attrs={'class': 'profile-form-style'}))
-    job_role = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'profile-form-style'}))
 
 
-# class SkillForm(forms.Form):
-
-#     class Meta:
-#         model = SeekerSkillset
-
-#     skill_1 = forms.CharField(max_length=255)
-#     skill_2 = forms.CharField(max_length=255, required=False)
-#     skill_3 = forms.CharField(max_length=255, required=False)
-#     skill_4 = forms.CharField(max_length=255, required=False)
-#     skill_5 = forms.CharField(max_length=255, required=False)
+class SkillForm(forms.Form):
+    class Meta:
+        model = SeekerSkillset
+    skill_1 = forms.CharField(max_length=255)
+    skill_2 = forms.CharField(max_length=255, required=False)
+    skill_3 = forms.CharField(max_length=255, required=False)
+    skill_4 = forms.CharField(max_length=255, required=False)
+    skill_5 = forms.CharField(max_length=255, required=False)
 
 
 class CreateJobForm(forms.Form):
@@ -126,6 +122,7 @@ class CreateJobForm(forms.Form):
     job_role = forms.CharField(max_length=255)
     job_description = forms.CharField(max_length=1000, widget=forms.Textarea)
     category = forms.ModelChoiceField(queryset=Category.objects.all())
+    sub_category = forms.ModelChoiceField(queryset=Subcategory.objects.all())
     organization = forms.CharField(max_length=255)
     remuneration = forms.IntegerField()
     location = forms.CharField(max_length=255)
@@ -135,3 +132,18 @@ class CreateJobForm(forms.Form):
     skill_required_4 = forms.CharField(max_length=255, required=False)
     skill_required_5 = forms.CharField(max_length=255, required=False)
     deadline = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+
+
+class InterviewForm(forms.Form):
+    class Meta:
+        model = Interview
+    interview_Date = forms.DateField()
+    interview_description = forms.CharField(max_length=1000)
+
+
+class Application_form(forms.Form):
+    class Meta:
+        model = Application
+        field = ('cv', 'cover_letter')
+    cv = forms.CharField(max_length=1000, widget=forms.Textarea)
+    cover_letter = forms.CharField(max_length=1000, widget=forms.Textarea)

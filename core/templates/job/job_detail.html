@@ -1,10 +1,6 @@
-{% extends 'index_base.html' %}
+{% extends "base.html" %}
+
 {% block content %}
-{% load static %}
-
-{% include "navbar.html" %}
-
-{% if request.user.is_recruiter %}
 <div class="text-center" style="border: none; width: auto">
     {% if messages %}
     {% for message in messages %}
@@ -57,7 +53,7 @@
             </div>
             <div class="mt-2">
                 <a href="{% url 'job_detail' job.id %}" class="btn btn-warning">Applications</a>
-                <a href="{% url 'update-job-post' job.id %}" class="btn btn-primary ml-2">Edit Post</a>
+                <!-- <a href="{% url 'update-job-post' job.id %}" class="btn btn-primary ml-2">Edit Post</a> -->
                 <a href="{% url 'job_detail' job.id %}" class="btn btn-danger ml-2">Delete Post</a>
             </div>
 
@@ -69,5 +65,4 @@
 
     {% endif %}
 </div>
-{% endif %}
-{% endblock content %}
+{% endblock %}

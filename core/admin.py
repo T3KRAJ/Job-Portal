@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import Category, Job, RecruiterProfile, SeekerProfile, User
+from .models import Application, Category, Interview, Job, Message, RecruiterProfile, SeekerProfile, Subcategory, User, SeekerSkillset
 
 
 class UserAdmin(BaseUserAdmin):
@@ -37,3 +37,8 @@ admin.site.register(SeekerProfile)
 admin.site.register(RecruiterProfile)
 admin.site.register(Job)
 admin.site.register(Category)
+admin.site.register(Subcategory)
+admin.site.register(Message)
+admin.site.register(Application)
+admin.site.register(Interview)
+admin.site.register(SeekerSkillset)

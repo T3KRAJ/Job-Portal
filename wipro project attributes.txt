@@ -1,0 +1,21 @@
+1. We need to do validation process for mail id , and also for the password it includes only 8 characters 
+  characters like only Lowercase , one special charcter, Number, Uppercase.
+2. login for job seeker he should include
+   a. Name
+   b. Mail-id
+   c. Contact details
+   d. Marks from(10, inter, dipolma, B.Tech, M.Tech)
+   e. Resume should get upload
+3. In the present code when we click on profile it was not displaying anything
+4. we need change the job-descrption because it was not related to company details at all
+5. In the descrption part we can include filter(only the persons  having the more than 60% of marks
+then the person is eligible to apply for it else no)
+6. We can include how many job application are avilable for particular company.
+7. We need know the stauts after completion of filling all details cloumn
+   a. it should display he is eligible for this particular job
+   b. if he doesn't met criteria of our job-descrptionb then it should display 
+    .......> your are not eligible to apply for this
+   c. After submit the application we should get a mail that after checking with HR team we will send futher communication
+   d. When we get interview link after completion interview process
+         ....> we neet get mail your interview completed
+   e. status should be inprogress.

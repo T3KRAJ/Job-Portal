@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+<div class="container">
+    <div class="text-center">
+
+        {% if messages %}
+
+        {% for message in messages %}
+
+        <p style="color: red; margin-top: 30px"> {{ message }}</p>
+
+        {% endfor %}
+
+        {% endif %}
+
+    </div>
+    <div id="jobform" data-subcategory-url="{% url 'subcategory'  %}" style="margin-top: 10px">
+
+        {% if form %}
+    <div class="form-group">
+        <div class="container">
+            <div class="card mt-4 mb-4 shadow mb-5 bg-white rounded">
+                <h4 class="card-header mt-2 mb-2">Create New Job Post</h4>
+                <div class="cardbody m-2 p-2">
+                    <form id="post_form" method="POST" action="" enctype="multipart/form-data">
+    
+                        {% csrf_token %}
+                        {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                        {% endfor %}
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Job Role</label>
+                                {{ form.job_role|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Job Description</label>
+                                {{ form.job_description|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Category</label>
+                                {{form.category|attr:"class:form-control"|attr:"type:select"|attr:"name:category"|attr:"readonly"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Sub Category</label>
+                                {{form.sub_category|attr:"class:form-control"|attr:"type:select"|attr:"name:category"|attr:"readonly"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Orgainization</label>
+                                {{ form.organization|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Salary</label>
+                                {{ form.remuneration|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Job Location</label>
+                                {{ form.location|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Skill Required 1</label>
+                                {{ form.skill_required_1|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Skill Required 2</label>
+                                {{ form.skill_required_2|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Skill Required 3</label>
+                                {{ form.skill_required_3|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Skill Required 4</label>
+                                {{ form.skill_required_4|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Skill Required 5</label>
+                                {{ form.skill_required_5|attr:"class:form-control"}}
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname">Deadline</label>
+                                {{ form.deadline|attr:"class:form-control"|attr:"type:date"}}
+                            </div>
+                            {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                <li {% if message.tags %} class="font-italic text-decoration-none text-{{ message.tags }} "
+                                    {%endif %}> {{
+                                    message }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            <input class="btn btn-block btn-success" type="submit" />
+                        </div>
+    
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        {% else %}
+        <a href="{% url 'add_job' %}">
+
+            <button class="btn btn-info"> Add Another Job </button>
+
+        </a>
+        <a href="{% url 'manage_jobs' %}" style="margin-left: 20px">
+
+            <button class="btn btn-warning"> View Created Job </button>
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}
