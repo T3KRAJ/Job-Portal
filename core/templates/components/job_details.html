@@ -130,8 +130,11 @@
             <button class="btn bg-info apply-button text-center" id="applyButton"
                     onclick="applicationViewer()" style="margin-top: 20px"> Apply </button>
 
-                {% else %}
-                <h5 style="margin-top: 30px; color: #d9534f"> You have already applied for this job </h5>
+                {% elif request.user.is_seeker and status == "F" %}
+
+                    <h5 style="margin-top: 30px; color: #d9534f"> You have already applied for this job </h5>
+            {% else %}
+                <a href="{% url 'applications' job.id %}" class="btn bg-info apply-button text-center mt-2">View Applications</a>
             {% endif %}
         </div>
     <div class="row ">
@@ -139,21 +142,10 @@
         <div class="col-md-12 description_detailed">
 
             <p> {{ job.job_description }}</p>
-
         </div>
-
-
     </div>
-
-
-
-
-
-
     </div>
-
     {% endif %}
-
     </div>
 
 

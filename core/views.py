@@ -305,14 +305,14 @@ def category(request):
 def job_details(request,jid):
     try:
         job = Job.objects.get(id=jid)
-        seekerprofile = SeekerProfile.objects.get(seeker=request.user)
         if request.user.is_seeker:
             try:
+                seekerprofile = SeekerProfile.objects.get(seeker=request.user)
                 application = Application.objects.get(seeker=seekerprofile, job = job)
                 status = application.status
                 form = None
 
-            except Exception as e:
+            except Exception:
                 status = "T"
                 form = Application_form
 
@@ -329,7 +329,7 @@ def job_details(request,jid):
         args = {'job':None,
                 'status':None,
                 'form':None}
-
+    print(status)
     return render(request,'components/job_details.html', args)
 
 @login_required
@@ -447,11 +447,11 @@ def applicant_details(request, jid, sid):
     except SeekerProfile.DoesNotExist:
         messages.warning(
             request, 'This User does not exist in the system any more')
-        return render(request, 'components/applicant_details.html', args)
+        return render(request, 'components/applicant_details.html')
 
     except Application.DoesNotExist:
-        messages.warning(request, 'This application does not exists', args)
-        return render(request, 'components/applicant_details.html', args)
+        messages.warning(request, 'This application does not exists')
+        return render(request, 'components/applicant_details.html')
 
 
 @login_required
