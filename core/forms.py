@@ -1,3 +1,5 @@
+"IN this module what the fields present admin data it will prodive"
+"It was bulid by Tek Raj"
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import Application, Category, Interview, Job, RecruiterProfile, SeekerProfile, SeekerSkillset, Subcategory, User

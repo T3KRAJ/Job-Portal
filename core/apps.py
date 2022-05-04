@@ -1,3 +1,4 @@
+"it is used for configuration"
 from django.apps import AppConfig
 
 

@@ -1,3 +1,5 @@
+"In this module it provides what are the models present in the login it will shows"
+"It was bulid by Sai Krishna And Tek Raj"
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
