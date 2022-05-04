@@ -66,14 +66,14 @@ class SeekerProfileForm(forms.Form):
         attrs={'class': 'profile-form-style'}))
     last_name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'profile-form-style'}))
-    gender = forms.ChoiceField(label='Gender', choices=GENDER_CHOICES, widget=forms.TextInput(
-        attrs={'class': 'profile-form-style'}))
+    gender = forms.ChoiceField(label='Gender', choices=GENDER_CHOICES)
     address = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'profile-form-style'}))
     phone = forms.IntegerField(widget=forms.TextInput(
         attrs={'class': 'profile-form-style'}))
-    birthDate = forms.DateTimeField(widget=forms.TextInput(
-        attrs={'class': 'profile-form-style'}))
+    birthDate = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}))
+
     current_job_role = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'profile-form-style'}))
     current_company = forms.CharField(
@@ -94,8 +94,7 @@ class RecruiterProfileForm(forms.Form):
         attrs={'class': 'profile-form-style'}))
     last_name = forms.CharField(max_length=255, widget=forms.TextInput(
         attrs={'class': 'profile-form-style'}))
-    gender = forms.ChoiceField(label='Gender', choices=GENDER_CHOICES,
-                               widget=forms.TextInput(attrs={'class': 'profile-form-style'}))
+    gender = forms.ChoiceField(label='Gender', choices=GENDER_CHOICES)
     company_name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'profile-form-style'}))
     company_address = forms.CharField(
@@ -145,5 +144,5 @@ class Application_form(forms.Form):
     class Meta:
         model = Application
         field = ('cv', 'cover_letter')
-    cv = forms.CharField(max_length=1000, widget=forms.Textarea)
+    cv = forms.FileField(widget=forms.FileInput)
     cover_letter = forms.CharField(max_length=1000, widget=forms.Textarea)

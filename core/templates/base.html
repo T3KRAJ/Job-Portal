@@ -15,18 +15,18 @@
 <body>
 
     {% if request.user.is_seeker or request.user == None %}
-    <div class="container">
+    <div>
         <div class="row">
             <div class="col-md-12">
                 <nav class="navbar navbar-dark navbar-expand-md bg-dark">
-                    <a class="navbar-brand mx-5" href="{% url 'search' %}" style="font-size:30px"> Job Portal </a>
+                    <a class="navbar-brand mx-5" href="{% url 'search' %}" style="font-size:20px"> Job Portal </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" style="float:right"
                         data-target="#myToggleNav" aria-controls="myTogglerNav" aria-label="Toggle Navigation"
                         aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse clearfix" id="myTogglerNav">
-                        <div class="navbar-nav mx-auto" style="font-size: 20px">
+                        <div class="navbar-nav mx-auto" style="font-size: 15px">
                             <a class="navbar-item nav-link" href="{% url 'my_applications' %}"> Applied Jobs </a>
                             <a class="navbar-item nav-link" href="{% url 'skills' %}">Skills</a>
                             <a class="navbar-item nav-link" href="{% url 'seeker_profile' %}"> Profile </a>
@@ -41,7 +41,7 @@
 
     <!---  Base Page for recruiter -->
 
-    <div class="container">
+    <div>
 
         <div class="row">
 
@@ -50,18 +50,15 @@
 
                 <nav class="navbar navbar-dark navbar-expand-md bg-dark">
 
-                    <a class="navbar-brand mx-5" href="{% url 'search' %}" style="font-size:30px"> Job Portal </a>
+                    <a class="navbar-brand mx-5" href="{% url 'search' %}" style="font-size:20px"> Job Portal </a>
 
                     <button class="navbar-toggler" type="button" data-toggle="collapse" style="float:right"
                         data-target="#myToggleNav" aria-controls="myTogglerNav" aria-label="Toggle Navigation"
                         aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-
-                    <div class="collapse navbar-collapse clearfix" id="myTogglerNav">
-
-                        <div class="navbar-nav mx-auto" style="font-size: 20px">
-
+                    <div class="collapse navbar-collapse clearfix float-right" id="myTogglerNav">
+                        <div class="navbar-nav mx-auto" style="font-size: 15px">
                             <a class="navbar-item nav-link" href="{%  url 'manage_jobs' %}"> Manage Jobs </a>
                             <a class="navbar-item nav-link" href="{% url 'recruiter_profile' %}"> Profile </a>
                             <a class="navbar-item nav-link" href="{% url 'logout' %}"> Logout </a>
@@ -75,36 +72,21 @@
     {% endif %}
     <div class="container">
         <div class="row mt-3">
-
             <div class="col-md-3">
-
                 <label class="label form-control" for="searchText" style="background-color: transparent;
                 color: #353030; font-size: 15px"> Search Keywords </label>
-
             </div>
-
-
             <div class="col-md-2">
-
                 <label class="label form-control" for="searchCategory" style="background-color: transparent;
                 color: #353030;font-size: 15px"> Search by </label>
-
             </div>
-
-
             <div class="col-md-2">
-
                 <label class="label form-control" for="searchCategory" style="background-color: transparent;
                 color: #353030;font-size: 15px"> Category </label>
-
             </div>
-
-
             <div class="col-md-2">
-
                 <label class="label form-control" for="searchCategory" style="background-color: transparent;
                 color: #353030;font-size: 15px"> Sub_Category </label>
-
             </div>
         </div>
         <form name="searchForm" type="get" action="{% url 'search_list' %}" style="margin-top: -35px">

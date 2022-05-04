@@ -1,5 +1,6 @@
 {%  extends "base.html" %}
-
+{% load static %}
+{% load widget_tweaks %}
 {% block content %}
 
 <div class="container">
@@ -28,20 +29,22 @@
         {% if form %}
         <div class="col-md-12 text-center" style="margin-bottom: 20px;">
 
-            <h2> JOB APPLICATION FORM  </h2>
-            <form method="post" action = {% url 'apply' job.id %} >
+            <h2 class="mt-3"> JOB APPLICATION FORM  </h2>
+            <form method="post" action = {% url 'apply' job.id %} enctype="multipart/form-data">
             {%  csrf_token %}
-            {% for field in form %}
-                <div style="margin-top: 20px">
-
-                     <label for="{{ field.name }}">{{ field.label }}</label>
-                     <textarea class="form-control" placeholder="{{ field.name }}"
-                     style="background-color: #1a1a1a; color: #ffffff" name="{{ field.name }}"></textarea>
-
-                </div>
-
-
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
             {% endfor %}
+            <div class="form-group">
+                            <div class="form-group">
+                                <label for="exampleInputdisplayname" class="text-dark font-weight-bold">Upload CV</label>
+                                {{ form.cv|attr:"class:form-control"}}
+                            </div>
+            <div class="form-group">
+                                <label for="exampleInputdisplayname" class="text-dark font-weight-bold">Cover Letter</label>
+                                {{ form.cover_letter|attr:"class:form-control"}}
+                            </div>
+                        </div>
 
             <button class="btn btn-success" type="submit" style="margin-top: 20px"> APPLY </button>
 
@@ -60,7 +63,7 @@
         <div class="row">
         <div class="col-md-12">
 
-            <h2 id="job_name"> {{ job.job_role }} </h2>
+            <h2 class="text-light" id="job_name"> {{ job.job_role }} </h2>
 
         </div>
 
@@ -97,8 +100,8 @@
     <div class="row">
         <div class="col-md-12">
 
-             <h6 id="skill_required"> Required Skills &nbsp : &nbsp&nbsp
-              {{ job.skill_required_1 }} &nbsp
+             <h6 id="skill_required"> Required Skills :
+              {{ job.skill_required_1 }},
             {{ job.skill_required_2 }}
 
         </div>
@@ -109,11 +112,10 @@
     <div class="row">
         <div class="col-md-12">
 
-             <h6 id="skill_required"> Desirable Skills &nbsp : &nbsp&nbsp
-             {% if job.skill_required_3 %} {{ job.skill_required_3 }} {% endif %}&nbsp&nbsp
-            {% if job.skill_required_4 %} {{ job.skill_required_4 }} {% endif %} &nbsp&nbsp
-                 {% if job.skill_required_5 %} {{ job.skill_required_5 }} {% endif %}</h6>
-
+             <h6 id="skill_required"> Desirable Skills :
+             {% if job.skill_required_3 %} {{ job.skill_required_3 }} {% endif %}
+            {% if job.skill_required_4 %} , &nbsp;{{ job.skill_required_4 }} {% endif %}
+                 {% if job.skill_required_5 %}, &nbsp; {{ job.skill_required_5 }} {% endif %}</h6>
         </div>
 
     </div>
@@ -128,34 +130,22 @@
             <button class="btn bg-info apply-button text-center" id="applyButton"
                     onclick="applicationViewer()" style="margin-top: 20px"> Apply </button>
 
-                {% else %}
-                <h5 style="margin-top: 30px; color: #d9534f"> You have already applied for this job </h5>
+                {% elif request.user.is_seeker and status == "F" %}
+
+                    <h5 style="margin-top: 30px; color: #d9534f"> You have already applied for this job </h5>
+            {% else %}
+                <a href="{% url 'applications' job.id %}" class="btn bg-info apply-button text-center mt-2">View Applications</a>
             {% endif %}
         </div>
-
-
-
-
     <div class="row ">
-
+        <h5 class="ml-3">Job Description:</h5>
         <div class="col-md-12 description_detailed">
 
             <p> {{ job.job_description }}</p>
-
         </div>
-
-
     </div>
-
-
-
-
-
-
     </div>
-
     {% endif %}
-
     </div>
 
 

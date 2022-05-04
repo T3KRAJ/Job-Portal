@@ -11,7 +11,6 @@ body {
     border-bottom: #3ca861;
 }
 
-
 /* Styling labels above the search box */
 .label {
     border-style: none;
@@ -54,39 +53,21 @@ body {
     border-style: inset;
     border-color: #ffffff;
     background-color: #0d0d0d;
-
 }
-
 
 /* border in induvidual job listing */
 .border-job {
     border-bottom: #ffffff;
     border-style: inset;
-
 }
 
-
-/* hover styling for individual job listing */
-
-.job_list:hover .border-job {
-
-    border-color: #bf2e29;
-    transition: border-color ease-in .4s;
-
-}
-
-
-
-.job_list h1, h2, h3, h4, h5, h6 {
-
-    color: #a9e0bc;
+.job_list h3, h4, h5, h6 {
+    color: #d6dfd9;
 }
 
 .job_list p {
     padding-top: 20px;
 }
-
-
 
 /* centering elements on a page */
 .page-center {
@@ -98,16 +79,11 @@ body {
     border-width: thin;
 }
 
-
 /* styling form input boxes */
 input {
     margin-top: 20px;
     color: #ffffff;
 }
-
-
-/* Job details page styling */
-
 
 /* job detail page items  */
 
@@ -118,27 +94,19 @@ input {
     background-color: #0d0d0d;
 }
 
-
-
 #job_name,#job_location, #job_organization, #job_renumeration {
     padding: 5px;
-
 }
 
-
-
 .border-job-details {
-
     overflow: auto;
     padding: 2px;
     border-color: #919aa1;
     background-color: #0d0d0d;
     border-style: groove;
-
 }
 
 .job_details p {
-
     padding-top: 20px;
 }
 
@@ -161,22 +129,15 @@ input {
     color: #4BBF73;
 }
 
-
 .profile-form{
-
     width: 70%;
     margin: 0 auto;
-
 }
 
-
-
 .profile-form-style{
-
     width: 400px;
     height: 30px;
     margin-left: 30px;
-
 }
 
 
