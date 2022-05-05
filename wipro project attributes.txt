@@ -1,4 +1,4 @@
-"It was done by velmurgan"
+
 1. We need to do validation process for mail id , and also for the password it includes only 8 characters 
   characters like only Lowercase , one special charcter, Number, Uppercase.
 2. login for job seeker he should include

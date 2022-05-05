@@ -1,6 +1,6 @@
 from datetime import date
-"IN this module Overall view of the user and recruiter seeker everything"
-"It was done by Aakansha, anushka , Maheswari"
+#"IN this module Overall view of the user and recruiter seeker everything"
+
 from difflib import SequenceMatcher
 from django.http import Http404
 from django.shortcuts import redirect, render

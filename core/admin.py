@@ -1,10 +1,10 @@
 "In this module display the list of lastlogin name email"
-" it was done by Rajeswari"
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models import Application, Category, Interview, Job, Message, RecruiterProfile, SeekerProfile, Subcategory, User, SeekerSkillset
-
+# here it allows what are fields , methods are provided for admin it display for the user.
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (

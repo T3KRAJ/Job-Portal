@@ -1,8 +1,7 @@
 
 from django.urls import path
 from .views import accept_applicant, applicant_details, applications, apply, category, createJobPost, edit_job, home, index, interview_call, job_details, logout_user, manage_jobs, my_applications, recruiter_register, recruiterProfile, reject_applicant, search, search_for_jobs, seeker_register, seekerProfile, skills, subcategory
-"It creates the URL when we search in the link every time it get updated like sending interview call"
-"It was done by Karthik"
+"It creates the URL when we search in the link every time it get updated like sending interview cal"
 urlpatterns = [
     path("", index, name='index'),
     path("home", home, name='home'),
