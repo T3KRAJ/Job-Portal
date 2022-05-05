@@ -1,11 +1,12 @@
-"In this module display the list of lastlogin name email"
-
+"""_summary_
+Admin dashboard
+@Author: Tek Raj Joshi
+"""
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-
 from .models import Application, Category, Interview, Job, Message, RecruiterProfile, SeekerProfile, Subcategory, User, SeekerSkillset
-# here it allows what are fields , methods are provided for admin it display for the user.
 
+# Custom user admin class inherting BaseUserAdmin
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password', 'name', 'last_login')}),
@@ -33,8 +34,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions',)
 
-
-admin.site.register(User, UserAdmin)
+# Every models needs to be registered.
 admin.site.register(SeekerProfile)
 admin.site.register(RecruiterProfile)
 admin.site.register(Job)

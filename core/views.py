@@ -1,6 +1,8 @@
+"""_summary_
+Views are created in this py file.
+@Author: Tek Raj Joshi
+"""
 from datetime import date
-#"IN this module Overall view of the user and recruiter seeker everything"
-
 from difflib import SequenceMatcher
 from django.http import Http404
 from django.shortcuts import redirect, render
@@ -16,9 +18,11 @@ from django.core.files.storage import FileSystemStorage
 
 def index(request):
     if request.method == "POST":
+        # User login view.
         form = AuthenticationForm(request, data=request.POST)
         email = request.POST.get('username', '')
         password = request.POST.get('password', '')
+        # User login with email and password.
         if form.is_valid():
             user = auth.authenticate(username=email, password=password)
             if user is not None:
@@ -44,12 +48,14 @@ def index(request):
     args = {'form': form}
     return render(request, 'registration/index.html', args)
 
+# User must be authenticated inorder to view home page.
 @login_required
 def home(request):
     return render(request, 'components/index.html')
 
 def seeker_register(request):
     if request.method == 'POST':
+        # Job seeker registration view.
         form = SeekerRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -61,6 +67,7 @@ def seeker_register(request):
 
 def recruiter_register(request):
     if request.method == 'POST':
+        # Job recruiter registration view.
         form = RecruiterRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -70,9 +77,158 @@ def recruiter_register(request):
     args = {'form': form}
     return render(request, 'registration/recruiter_signup.html', args)
 
+@ login_required
+def recruiterProfile(request):
+    if request.method == 'POST':
+        # Job recruiter profile creation view
+        form = RecruiterProfileForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            gender = form.cleaned_data['gender']
+            company_address = form.cleaned_data['company_address']
+            company_phone = form.cleaned_data['company_phone']
+            company_name = form.cleaned_data['company_name']
+            try:
+                profile = RecruiterProfile.objects.get(
+                    recruiter_id=request.user.id)
+                profile.first_name = first_name
+                profile.last_name = last_name
+                profile.gender = gender
+                profile.company_address = company_address
+                profile.company_phone = company_phone
+                profile.company_name = company_name
+                profile.save()
+
+            except RecruiterProfile.DoesNotExist:
+
+                RecruiterProfile.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    gender=gender,
+                    company_address=company_address,
+                    company_phone=company_phone,
+                    company_name=company_name,
+                    recruiter_id=request.user.id
+                ).save()
+            form = RecruiterProfileForm(initial={'first_name': first_name, 'last_name': last_name,
+                                                 'gender': gender, 'company_address': company_address,
+                                                 'company_phone': company_phone,
+                                                 'company_name': company_name})
+        args = {'form': form}
+        return render(request, 'components/recruiterprofile.html', args)
+    else:
+        if request.user.is_authenticated:
+            recruiter = request.user.id
+            try:
+                profile = RecruiterProfile.objects.get(recruiter_id=recruiter)
+                first_name = profile.first_name
+                last_name = profile.last_name
+                gender = profile.gender
+                company_address = profile.company_address
+                company_phone = profile.company_phone
+                company_name = profile.company_name
+            except:
+                first_name = ""
+                last_name = ""
+                gender = ""
+                company_address = ""
+                company_phone = ""
+                company_name = ""
+            # Getting user details to show in profile
+            form = RecruiterProfileForm(initial={'first_name': first_name, 'last_name': last_name,
+                                                 'gender': gender, 'company_address': company_address,
+                                                 'company_phone': company_phone,
+                                                 'company_name': company_name})
+            args = {'form': form}
+            return render(request, 'components/recruiterprofile.html', args)
+
+
+@ login_required
+def seekerProfile(request):
+    if request.method == 'POST':
+        # Job seeker profile creation view
+        form = SeekerProfileForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            gender = form.cleaned_data['gender']
+            address = form.cleaned_data['address']
+            phone = form.cleaned_data['phone']
+            birthdate = form.cleaned_data['birthDate']
+            current_job = form.cleaned_data['current_job_role']
+            company = form.cleaned_data['current_company']
+            try:
+                profile = SeekerProfile.objects.get(seeker_id=request.user.id)
+                profile.first_name = first_name
+                profile.last_name = last_name
+                profile.gender = gender
+                profile.address = address
+                profile.phone = phone
+                profile.birthDate = birthdate
+                profile.current_job = current_job
+                profile.company = company
+                profile.save()
+            except SeekerProfile.DoesNotExist:
+                SeekerProfile.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    gender=gender,
+                    address=address,
+                    phone=phone,
+                    birthDate=birthdate,
+                    current_job_role=current_job,
+                    current_company=company,
+                    seeker_id=request.user.id
+                ).save()
+            form = SeekerProfileForm(initial={'first_name': first_name, 'last_name': last_name,
+                                              'gender': gender, 'address': address, 'phone': phone, 'birthDate': birthdate,
+                                              'current_job_role': current_job, 'current_company': company})
+        args = {'form': form}
+        return render(request, 'components/seekerprofile.html', args)
+    else:
+        if request.user.is_authenticated:
+            seeker = request.user.id
+            try:
+                profile = SeekerProfile.objects.get(seeker_id=seeker)
+                first_name = profile.first_name
+                last_name = profile.last_name
+                gender = profile.gender
+                address = profile.address
+                phone = profile.phone
+                birthdate = profile.birthDate
+                current_job = profile.current_job_role
+                company = profile.current_company
+            except:
+                first_name = ""
+                last_name = ""
+                gender = ""
+                address = ""
+                phone = ""
+                birthdate = ""
+                current_job = ""
+                company = ""
+        # Getting user details to show in profile
+            form = SeekerProfileForm(initial={'first_name': first_name, 'last_name': last_name,
+                                              'gender': gender, 'address': address, 'phone': phone, 'birthDate': birthdate,
+                                              'current_job_role': current_job, 'current_company': company})
+            args = {'form': form}
+            return render(request, 'components/seekerprofile.html', args)
+
+def subcategory(request):
+    category_id = request.GET.get('category')
+    sub_category = Subcategory.objects.filter(category_id=category_id)
+    return render(request, 'components/subcategory_drop_down.html', {'sub_category': sub_category})
+
+
+def category(request):
+    category_list = Category.objects.all()
+    return render(request, 'components/category_drop_down.html', {'category': category_list})
+
 @login_required
 def createJobPost(request):
     if request.method == "POST":
+        # Job post creation view.
         form = CreateJobForm(request.POST)
         if form.is_valid():
             job_role = form.cleaned_data['job_role']
@@ -142,6 +298,8 @@ def createJobPost(request):
 @login_required
 def edit_job(request, id):
     if request.method == "POST":
+        # Job post updation view.
+
         form = CreateJobForm(request.POST)
         if form.is_valid():
             job_role = form.cleaned_data['job_role']
@@ -219,6 +377,7 @@ def edit_job(request, id):
 
 def search_for_jobs(request):
     if request.method == "GET":
+        # Job search view.
         keyword = request.GET.get('keyword')
         if keyword == None or keyword == "":
             args = {'results': None}
@@ -293,15 +452,6 @@ def search_by_remuneration(keyword, category, subcategory):
     except:
         return None
 
-def subcategory(request):
-    category_id = request.GET.get('category')
-    sub_category = Subcategory.objects.filter(category_id=category_id)
-    return render(request, 'components/subcategory_drop_down.html', {'sub_category': sub_category})
-
-
-def category(request):
-    category_list = Category.objects.all()
-    return render(request, 'components/category_drop_down.html', {'category': category_list})
 
 @login_required
 def job_details(request,jid):
@@ -334,11 +484,13 @@ def job_details(request,jid):
     print(status)
     return render(request,'components/job_details.html', args)
 
+# User must be authenticated inorder to logout.
 @login_required
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect('/')
 
+# User must be authenticated to apply for any job.
 @login_required
 def apply(request, jid):
     if request.method == "POST":
@@ -393,6 +545,18 @@ def apply(request, jid):
 
 
 def matching_score(request, job, seekerprofile):
+    """_summary_
+    A score is calculated based on similarity between job seeker's skill set and skills required 
+    for the job using sequence matching library.
+    Args:
+        request (_type_)
+        job (instance)
+        seekerprofile (instance)
+
+    Returns:
+        int: matching score
+    """
+
     job_skills = [job.skill_required_1, job.skill_required_2, job.skill_required_3,
                   job.skill_required_4, job.skill_required_5]
     job_skills = [i for i in job_skills if i is not None]
@@ -416,7 +580,7 @@ def matching_score(request, job, seekerprofile):
     total_score *= 100
     return total_score
 
-
+# User must be authenticated to view his/her job applications
 @login_required
 def my_applications(request):
     try:
@@ -431,7 +595,7 @@ def my_applications(request):
 
     return render(request, 'components/appliedjobs.html', args)
 
-
+# User must be authenticated to view applications details of a particular job.
 @login_required()
 def applicant_details(request, jid, sid):
     try:
@@ -455,7 +619,7 @@ def applicant_details(request, jid, sid):
         messages.warning(request, 'This application does not exists')
         return render(request, 'components/applicant_details.html')
 
-
+# User must be authenticated to accept an applicant for a particular job application.
 @login_required
 def accept_applicant(request, aid):
     try:
@@ -477,7 +641,7 @@ def accept_applicant(request, aid):
         messages.warning(request, 'Invalid Request')
         return render(request, 'components/applicant_details.html')
 
-
+# User must be authenticated to reject an applicant for a particular job application.
 @login_required
 def reject_applicant(request, aid):
     try:
@@ -498,7 +662,7 @@ def reject_applicant(request, aid):
         messages.warning(request, 'Invalid Request')
         return render(request, 'components/applicant_details.html')
 
-
+# User must be authenticated to set an interview call for a particular job application.
 @login_required
 def interview_call(request, aid):
     try:
@@ -533,7 +697,7 @@ def interview_call(request, aid):
         messages.warning(request, 'Invalid Request')
         return render(request, 'components/applicant_details.html')
 
-
+# User must be authenticated to view the applicants for a particular job.
 @ login_required
 def applications(request, id):
     try:
@@ -549,145 +713,9 @@ def applications(request, id):
 
 
 @ login_required
-def recruiterProfile(request):
-    if request.method == 'POST':
-        form = RecruiterProfileForm(request.POST)
-        if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            gender = form.cleaned_data['gender']
-            company_address = form.cleaned_data['company_address']
-            company_phone = form.cleaned_data['company_phone']
-            company_name = form.cleaned_data['company_name']
-            try:
-                profile = RecruiterProfile.objects.get(
-                    recruiter_id=request.user.id)
-                profile.first_name = first_name
-                profile.last_name = last_name
-                profile.gender = gender
-                profile.company_address = company_address
-                profile.company_phone = company_phone
-                profile.company_name = company_name
-                profile.save()
-
-            except RecruiterProfile.DoesNotExist:
-
-                RecruiterProfile.objects.create(
-                    first_name=first_name,
-                    last_name=last_name,
-                    gender=gender,
-                    company_address=company_address,
-                    company_phone=company_phone,
-                    company_name=company_name,
-                    recruiter_id=request.user.id
-                ).save()
-            form = RecruiterProfileForm(initial={'first_name': first_name, 'last_name': last_name,
-                                                 'gender': gender, 'company_address': company_address,
-                                                 'company_phone': company_phone,
-                                                 'company_name': company_name})
-        args = {'form': form}
-        return render(request, 'components/recruiterprofile.html', args)
-    else:
-        if request.user.is_authenticated:
-            recruiter = request.user.id
-            try:
-                profile = RecruiterProfile.objects.get(recruiter_id=recruiter)
-                first_name = profile.first_name
-                last_name = profile.last_name
-                gender = profile.gender
-                company_address = profile.company_address
-                company_phone = profile.company_phone
-                company_name = profile.company_name
-            except:
-                first_name = ""
-                last_name = ""
-                gender = ""
-                company_address = ""
-                company_phone = ""
-                company_name = ""
-            # Getting user details to show in profile
-            form = RecruiterProfileForm(initial={'first_name': first_name, 'last_name': last_name,
-                                                 'gender': gender, 'company_address': company_address,
-                                                 'company_phone': company_phone,
-                                                 'company_name': company_name})
-            args = {'form': form}
-            return render(request, 'components/recruiterprofile.html', args)
-
-
-@ login_required
-def seekerProfile(request):
-    if request.method == 'POST':
-        form = SeekerProfileForm(request.POST)
-        if form.is_valid():
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            gender = form.cleaned_data['gender']
-            address = form.cleaned_data['address']
-            phone = form.cleaned_data['phone']
-            birthdate = form.cleaned_data['birthDate']
-            current_job = form.cleaned_data['current_job_role']
-            company = form.cleaned_data['current_company']
-            try:
-                profile = SeekerProfile.objects.get(seeker_id=request.user.id)
-                profile.first_name = first_name
-                profile.last_name = last_name
-                profile.gender = gender
-                profile.address = address
-                profile.phone = phone
-                profile.birthDate = birthdate
-                profile.current_job = current_job
-                profile.company = company
-                profile.save()
-            except SeekerProfile.DoesNotExist:
-                SeekerProfile.objects.create(
-                    first_name=first_name,
-                    last_name=last_name,
-                    gender=gender,
-                    address=address,
-                    phone=phone,
-                    birthDate=birthdate,
-                    current_job_role=current_job,
-                    current_company=company,
-                    seeker_id=request.user.id
-                ).save()
-            form = SeekerProfileForm(initial={'first_name': first_name, 'last_name': last_name,
-                                              'gender': gender, 'address': address, 'phone': phone, 'birthDate': birthdate,
-                                              'current_job_role': current_job, 'current_company': company})
-        args = {'form': form}
-        return render(request, 'components/seekerprofile.html', args)
-    else:
-        if request.user.is_authenticated:
-            seeker = request.user.id
-            try:
-                profile = SeekerProfile.objects.get(seeker_id=seeker)
-                first_name = profile.first_name
-                last_name = profile.last_name
-                gender = profile.gender
-                address = profile.address
-                phone = profile.phone
-                birthdate = profile.birthDate
-                current_job = profile.current_job_role
-                company = profile.current_company
-            except:
-                first_name = ""
-                last_name = ""
-                gender = ""
-                address = ""
-                phone = ""
-                birthdate = ""
-                current_job = ""
-                company = ""
-        # Getting user details to show in profile
-            form = SeekerProfileForm(initial={'first_name': first_name, 'last_name': last_name,
-                                              'gender': gender, 'address': address, 'phone': phone, 'birthDate': birthdate,
-                                              'current_job_role': current_job, 'current_company': company})
-            args = {'form': form}
-            return render(request, 'components/seekerprofile.html', args)
-
-
-@ login_required
 def skills(request):
     if request.method == "POST":
+        #Job seeker's skills creation/updation view.
         form = SkillForm(request.POST)
         if form.is_valid():
             skill_1 = form.cleaned_data['skill_1']
@@ -755,7 +783,7 @@ def skills(request):
             args = {'form': form}
             return render(request, 'components/seekerskill.html', args)
 
-
+#Recruiter needs to be authenticated inorder to manage jobs.
 @ login_required
 def manage_jobs(request):
     try:

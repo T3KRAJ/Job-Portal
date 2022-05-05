@@ -1,5 +1,8 @@
-"IN this module what the fields present admin data it will prodive"
-
+# It is a py file that holds the form configuration for different models.
+"""_summary_
+It is a py file that defines the forms for different models.
+@Author: Tek Raj Joshi
+"""
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import Application, Category, Interview, Job, RecruiterProfile, SeekerProfile, SeekerSkillset, Subcategory, User
@@ -17,6 +20,14 @@ class SeekerRegistrationForm(UserCreationForm):
         )
 
     def save(self, commit=True):
+        """_summary_
+        Create the job seeker object.
+        Args:
+            validated_data: email
+            validated_data: password
+        Returns:
+            object: user
+        """
         user = super(UserCreationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         user.set_password(self.cleaned_data['password1'])
@@ -42,6 +53,14 @@ class RecruiterRegistrationForm(UserCreationForm):
         )
 
     def save(self, commit=True):
+        """_summary_
+        Create the job recruiter object.
+        Args:
+            validated_data: email
+            validated_data: password
+        Returns:
+            object: user
+        """
         user = super(UserCreationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         user.set_password(self.cleaned_data['password1'])
@@ -55,7 +74,7 @@ class RecruiterRegistrationForm(UserCreationForm):
 
 
 class SeekerProfileForm(forms.Form):
-
+    # Job seeker profile form.
     class Meta:
         model = SeekerProfile
 
@@ -83,7 +102,7 @@ class SeekerProfileForm(forms.Form):
 
 
 class RecruiterProfileForm(forms.Form):
-
+    # Job recruiter profile form.
     class Meta:
         model = RecruiterProfile
 
@@ -106,6 +125,7 @@ class RecruiterProfileForm(forms.Form):
 
 
 class SkillForm(forms.Form):
+    # Job seeker skills form.
     class Meta:
         model = SeekerSkillset
     skill_1 = forms.CharField(max_length=255)
@@ -116,7 +136,7 @@ class SkillForm(forms.Form):
 
 
 class CreateJobForm(forms.Form):
-
+    # Job Post form.
     class Meta:
         model = Job
 
@@ -136,6 +156,7 @@ class CreateJobForm(forms.Form):
 
 
 class InterviewForm(forms.Form):
+    # Job interview form.
     class Meta:
         model = Interview
     interview_Date = forms.DateField()
@@ -143,6 +164,7 @@ class InterviewForm(forms.Form):
 
 
 class Application_form(forms.Form):
+    # Job application form.
     class Meta:
         model = Application
         field = ('cv', 'cover_letter')

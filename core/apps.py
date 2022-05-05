@@ -1,4 +1,4 @@
-#it is used for configuration"
+#It is used for app configuration"
 from django.apps import AppConfig
 
 
